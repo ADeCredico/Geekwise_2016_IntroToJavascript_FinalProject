@@ -1,7 +1,0 @@
--init grid
--index grid in 2d array for ease of reference, use objects with reference to the cell, method to set active state, and method to check active state (is public/private even a thing in JavaScript?)
--populate grid with initial state
-
---enter loop--
--iterate and change appropriate cells according to adjacency rules
--check for pause
