@@ -1,1 +1,1 @@
-alert("This works.");
+"use strict";
