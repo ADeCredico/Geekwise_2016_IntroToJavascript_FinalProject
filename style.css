@@ -1,1 +1,17 @@
-h1 {color: red;}
+body { margin: 10px; }
+
+table {
+    border-spacing: 1px;
+    margin: 0 auto;
+    background-color: black;
+}
+
+td {
+    min-width: 25px;
+    height: 25px;
+    padding: 0px;
+}
+
+.on {
+	background-color: white;
+}
