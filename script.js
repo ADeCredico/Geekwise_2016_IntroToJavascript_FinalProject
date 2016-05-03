@@ -1,4 +1,5 @@
-'use strict';
+// 'use strict';
+// Conway's Game of Life
 
 //  creates the table in html
 function createTable(numCols, numRows) {
@@ -58,6 +59,15 @@ function killGame(deadInterval) {
     window.clearInterval(deadInterval)
 };
 
+// FILL ME WITH ACTUAL CODE
+function runGameTick(game) {
+  if (gamePaused != true) {
+    game.checkCells();
+    game.changeCells();
+  }
+}
+
+// REPLACE WITH USER ENTERED VALUES
 createTable(15, 23);
 
 //	store the table elements
@@ -65,8 +75,12 @@ const tableRows = document.getElementsByTagName('tr');
 const tableCells = document.getElementsByTagName('td');
 const tableCellsPerRow = tableCells.length / tableRows.length;
 
-const gameGrid = createGridArray(tableCells, tableCellsPerRow, tableRows.length);
+let gameOfLife = new Object();
+gameOfLife.gridArray = createGridArray(tableCells, tableCellsPerRow, tableRows.length);
 
-const programInterval = setInterval(function (){
-	if(runGameTick, lifeSpeed);
+// USE A DENSITY VALUE FROM A WEB FORM TO GENERATE INITIAL SEED
+gameOfLife.initGrid();
+
+const programInterval = setInterval(gameOfLife, lifeSpeed);
+
 window.alert('All Done.');
