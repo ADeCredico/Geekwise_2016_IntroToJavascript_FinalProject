@@ -4,3 +4,33 @@ ALLOW TO RESET GAME AND RESEED
 2||2 survives
 >3 dies
 3 comes alive
+
+//////Program Logic///////
+-on page load
+  -call initalization method of the game object
+    -read gameSpeed input box and store value in game object
+    -read gridSize input box and store value in game object
+    -read seedDensity input box and store value in game object
+
+  -write grid to DOM with ID gameTable
+  -call the game object's start simulation method
+
+-on game object's start simulation method being called
+  -read gameTable's cells and write to a 2d array in game object
+
+  -setInterval to every gameSpeed
+    -check for pause state
+      -if paused clear the interval and exit
+    -call the iteration function
+      -write CSS class of "on" to the cells that are set to on
+      -advance a generation
+
+-on "new seed" button push
+  -read seedDensity input box value and store in game object
+  -call game object method to randomize the cells using the stored seedDensity
+
+-on "restart game" button push
+  -delete the entire gameTable HTML tag
+  -call initalization method of the game object
+  -write grid to DOM with ID gameTable
+  -call the game object's start simulation method

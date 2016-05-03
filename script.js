@@ -1,9 +1,9 @@
 // 'use strict';
 // Conway's Game of Life
 
-//  creates the table in html
+//  append a table of numCols by numRows to document.body.innerHTML
 function createTable(numCols, numRows) {
-  const begin = '<table border=1>';
+  const begin = '<table border=1 id="gameTable">';
   let middle = '';
   const end = '</table>';
 
@@ -19,9 +19,9 @@ function createTable(numCols, numRows) {
   document.body.innerHTML += `<div> ${begin} ${middle} ${end} </div>`;
 }
 
-//	takes a row and column count and returns an array of arrays
+// return an array of arrays rows by columns large
 function create2DArray(rows, columns) {
-  var f = new Array();
+  let f = new Array();
 
   for (let i = 0; i < rows; i++) {
     f[i] = new Array();
@@ -33,15 +33,15 @@ function create2DArray(rows, columns) {
   return f;
 }
 
-/** takes a nodelist of cells, the number of cells per row, and the number of rows
- and returns an array of arrays containing the cells */
-function createGridArray(cellsArgument, cellsPerRowArgument, numberOfRows) {
-  var cellArray = create2DArray(numberOfRows);
+/** pass a nodelist of cells, number of cells per row, number of rows:
+return array of arrays of the cells */
+function createGridArray(gridCells, cellsPerRowArgument, numberOfRows) {
+  const cellArray = create2DArray(numberOfRows);
   let xCoord = 0;
   let yCoord = 0;
 
-  for (let i = 0; i < cellsArgument.length; i++) {
-    cellArray[xCoord][yCoord] = cellsArgument[i];
+  for (let i = 0; i < gridCells.length; i++) {
+    cellArray[xCoord][yCoord] = gridCells[i];
 
     if (cellsPerRowArgument === (yCoord + 1)) {
       xCoord++;
@@ -54,33 +54,7 @@ function createGridArray(cellsArgument, cellsPerRowArgument, numberOfRows) {
   return cellArray;
 }
 
-// clears the interval passed
-function killGame(deadInterval) {
-    window.clearInterval(deadInterval)
-};
-
-// FILL ME WITH ACTUAL CODE
-function runGameTick(game) {
-  if (gamePaused != true) {
-    game.checkCells();
-    game.changeCells();
-  }
-}
-
-// REPLACE WITH USER ENTERED VALUES
-createTable(15, 23);
-
-//	store the table elements
-const tableRows = document.getElementsByTagName('tr');
-const tableCells = document.getElementsByTagName('td');
-const tableCellsPerRow = tableCells.length / tableRows.length;
-
-let gameOfLife = new Object();
-gameOfLife.gridArray = createGridArray(tableCells, tableCellsPerRow, tableRows.length);
-
-// USE A DENSITY VALUE FROM A WEB FORM TO GENERATE INITIAL SEED
-gameOfLife.initGrid();
-
-const programInterval = setInterval(gameOfLife, lifeSpeed);
-
-window.alert('All Done.');
+let tableRows = document.getElementsByTagName('tr');
+let tableCells = document.getElementsByTagName('td');
+let tableCellsPerRow = tableCells.length / tableRows.length;
+let simulationSpeed = document.getElementById('simSpeed').value;
