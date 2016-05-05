@@ -80,6 +80,7 @@ const gameOfLife = { isPaused: true,
                     nextGeneration: function nextGeneration() {
                       gameOfLife.gameGrid = gameOfLife.evaluateLife(gameOfLife.gameGrid);
                     },
+                    // kills the interval if running, runSimulation if not
                     togglePause: function togglePause() {
                       if (gameOfLife.isPaused === true) {
                         gameOfLife.runSimulation();
@@ -93,6 +94,7 @@ const gameOfLife = { isPaused: true,
                       /** takes a 2d array and returns the array having
                        the game of life rules applied*/
                     },
+                    // does some very janky random shit, I should probably fix that, or not
                     randomizeSeed: function randomizeSeed() { // TODO: Make this work
                       for (let i = 0; i < gameOfLife.gameCells.length; i++) {
                         const diceRoll =
@@ -103,6 +105,7 @@ const gameOfLife = { isPaused: true,
                         }
                       }
                     },
+                    // turns the cell "on"
                     setCellAlive: function setCellAlive(cellNumber) {
                       gameOfLife.gameCells[cellNumber].className = 'on';
                     },
