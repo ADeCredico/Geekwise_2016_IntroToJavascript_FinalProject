@@ -6,43 +6,48 @@ ALLOW TO RESET GAME AND RESEED
 3 comes alive
 
 //////Program Logic///////
--game object properties
-  -gameSpeed
-  -gridSize
-  -seedDensity
-  -pause boolean
-  -2d grid array
--game object methods
-  -initalization - reads gameSpeed, gridSize, seedDensity, pauseState input boxes
-    and stores in properties
-  -runSimulation loop
-  -store grid to 2d array
-  -toggle pause boolean, call runSimulation if unpausing
+-game object constituents
+  -game object properties
+    -gameSpeed
+    -gridSize
+    -seedDensity
+    -pause boolean - initalize to on
+    -2d grid array
+  -game object methods
+    -initalization - is passed gameSpeed, gridSize, seedDensity, pauseState input boxes
+      and stores in properties
+    -runSimulation loop
+    -nextGeneration runs one generation pass over the grid and kills/creates lives
+    -storeTable is passed table and stores in 2d grid array
+    -toggle pause boolean, call runSimulation if unpausing
 
--page's controls
-  -pause button - calls game object's togglePause method
-  -gameSpeed, gridSize, seedDensity text input
+-on game object's runSimulation method being called
+  -setInterval with  gameSpeed
+    -check for pause state
+      -if paused clear the interval and exit
+    -call the NextGeneration function
+    -write CSS class of "on" to the cells that are set to on
+
+-page controls
+  -pause/play button - calls game object's togglePause method
+  -reset game button
+  -gameSpeed, gridHeight, gridWidth, seedDensity text inputs
 
 -on page load
   -write grid to DOM with ID gameTable
   -call initalization method of the game object
   -pass grid to game object's 2d array
-  -call the game object's start simulation method
-
--on game object's runSimulation method being called
-  -setInterval to every gameSpeed
-    -check for pause state
-      -if paused clear the interval and exit
-    -call the iteration function
-      -write CSS class of "on" to the cells that are set to on
-      -advance a generation
-
--on "new seed" button push
-  -read seedDensity input box value and store in game object
   -call game object method to randomize the cells using the stored seedDensity
+  -call the game object's start simulation method
 
 -on "restart game" button push
   -delete the entire gameTable HTML tag
-  -call initalization method of the game object
   -write grid to DOM with ID gameTable
+  -call initalization method of the game object
+  -pass grid to game object's 2d array
+  -call game object method to randomizeCells using the stored seedDensity
   -call the game object's start simulation method
+
+-on "new seed" button push
+  -read seedDensity input box value and store in game object
+  -call game object method to randomizeCells using the stored seedDensity
