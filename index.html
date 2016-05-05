@@ -2,11 +2,11 @@
 	<head>
 		<title>Game of Life</title>
 	</head>
-	<body onload = "startTheGameOfLife()">
-		Height<input type="text" id="tableHeight" value="20"><br>
-		Width <input type="text" id="tableWidth" value="20"><br>
-		Speed (ms)<input type="text" id="simSpeed" value="500"><br>
-		Seed Density<input type="text" id="seedDensity" value="100"><br>
+	<body onload = "pageLoadedStartGame()">
+		Height<input type="text" id="tableHeight"><br>
+		Width <input type="text" id="tableWidth"><br>
+		Speed (ms)<input type="text" id="simSpeed"><br>
+		Seed Density<input type="text" id="seedDensity"><br>
 		<button onclick="pauseButtonClick()" type="button" id="pauseButton">Play/Pause</button>
 		<button onclick="resetButtonClick()" type="button" id="resetButton">Reset</button>
 		<script src="script.js"></script>

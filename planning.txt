@@ -28,7 +28,7 @@ ALLOW TO RESET GAME AND RESEED
     -call the NextGeneration function
     -write CSS class of "on" to the cells that are set to on
 
--page controls
+-web page controls
   -pause/play button - calls game object's togglePause method
   -reset game button
   -gameSpeed, gridHeight, gridWidth, seedDensity text inputs
@@ -40,14 +40,10 @@ ALLOW TO RESET GAME AND RESEED
   -call game object method to randomize the cells using the stored seedDensity
   -call the game object's start simulation method
 
--on "restart game" button push
+-on "reset game" button push
   -delete the entire gameTable HTML tag
   -write grid to DOM with ID gameTable
   -call initalization method of the game object
   -pass grid to game object's 2d array
   -call game object method to randomizeCells using the stored seedDensity
   -call the game object's start simulation method
-
--on "new seed" button push
-  -read seedDensity input box value and store in game object
-  -call game object method to randomizeCells using the stored seedDensity

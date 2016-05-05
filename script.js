@@ -1,4 +1,4 @@
-// 'use strict';
+'use strict';
 // Conway's Game of Life
 
 //  append a table of numCols by numRows to document.body.innerHTML with the id tableId
@@ -16,7 +16,7 @@ function createTable(numRows, numCols, tableId) {
 
     middle += '</tr>';
   }
-  document.body.innerHTML += `<div> ${begin} ${middle} ${end} </div>`;
+  document.body.innerHTML += `<div id = "tableDiv"> ${begin} ${middle} ${end} </div>`;
 }
 
 // return an array of arrays rows by columns large
@@ -55,85 +55,104 @@ function createGridArray(gridCells, cellsPerRow, numberOfRows) {
 }
 
 function makeTableFromInput() {
-  const theHeight = document.getElementById('tableHeight');
-  const theWidth = document.getElementById('tableWidth');
+  const theHeight = document.getElementById('tableHeight').value;
+  const theWidth = document.getElementById('tableWidth').value;
 
   createTable(theHeight, theWidth, 'gameTable');
 }
 
 const gameOfLife = { isPaused: true,
 
-                    ititalize: function initalize(speed, size, density, pauseState) {
-                      self.gameSpeed = speed;
-                      self.gameSize = size;
-                      self.seedDensity = density;
-                      self.isPaused = pauseState;
+                    initalize: function initalize(speed, height, width, density) {
+                      gameOfLife.gameSpeed = speed;
+                      gameOfLife.gameHeight = height;
+                      gameOfLife.gameWidth = width;
+                      gameOfLife.seedDensity = density;
+                    },
+                    storeGrid: function storeGrid(grid, cells) {
+                      gameOfLife.gameGrid = grid;
+                      gameOfLife.gameCells = cells;
                     },
                     runSimulation: function runSimulation() {
-                      self.gameInterval = setInterval(self.nextGeneration, self.gameSpeed);
+                      gameOfLife.gameInterval = setInterval(gameOfLife.nextGeneration,
+                                                            gameOfLife.gameSpeed);
                     },
                     nextGeneration: function nextGeneration() {
-                      self.gameGrid = self.evaluateLife(self.gameGrid);
-                    },
-                    storeGrid: function storeGrid(grid) {
-                      self.gameGrid = grid;
+                      gameOfLife.gameGrid = gameOfLife.evaluateLife(gameOfLife.gameGrid);
                     },
                     togglePause: function togglePause() {
-                      if (self.isPaused === true) {
-                        self.runSimulation();
-                        self.isPaused = false;
+                      if (gameOfLife.isPaused === true) {
+                        gameOfLife.runSimulation();
+                        gameOfLife.isPaused = false;
                       } else {
-                        clearInterval(self.gameInterval);
-                        self.isPaused = true;
+                        clearInterval(gameOfLife.gameInterval);
+                        gameOfLife.isPaused = true;
                       }
                     },
-                    evaluateLife: function evaluateLife(grid) {
+                    evaluateLife: function evaluateLife(grid) { // TODO: Make this work
                       /** takes a 2d array and returns the array having
                        the game of life rules applied*/
                     },
-                    randomizeSeed: function randomizeSeed() {
-                      // randomly set cells to 'on' using seedDensity
+                    randomizeSeed: function randomizeSeed() { // TODO: Make this work
+                      for (let i = 0; i < gameOfLife.gameCells.length; i++) {
+                        const diceRoll =
+                          Math.floor(Math.random() * (gameOfLife.seedDensity ) - 0) + 0;
+
+                        if (diceRoll > gameOfLife.seedDensity / 100) {
+                          gameOfLife.setCellAlive(i);
+                        }
+                      }
+                    },
+                    setCellAlive: function setCellAlive(cellNumber) {
+                      gameOfLife.gameCells[cellNumber].className = 'on';
                     },
 };
+
+function initGameBoard() {
+  makeTableFromInput();
+
+  const pageTableRows = document.getElementsByTagName('tr');
+  const pageTableCells = document.getElementsByTagName('td');
+  const pageTableCellsPerRow = pageTableCells.length / pageTableRows.length;
+  const simulationSpeed = document.getElementById('simSpeed').value;
+  const seedDensity = document.getElementById('seedDensity').value;
+
+  gameOfLife.storeGrid(createGridArray(pageTableCells,
+                                        pageTableCellsPerRow,
+                                        pageTableRows.length),
+                      pageTableCells);
+
+  gameOfLife.initalize(simulationSpeed,
+                      pageTableRows,
+                      pageTableCellsPerRow,
+                      seedDensity);
+}
 
 function pauseButtonClick() {
   gameOfLife.togglePause();
 }
 
 function resetButtonClick() {
-  const currentHeight = document.getElementById('tableHeight');
-  const currentWidth = document.getElementById('tableWidth');
+  // Delete the current table from HTML
+  const currentGrid = document.getElementById('tableDiv');
+  document.body.removeChild(currentGrid);
 
-  const currentGrid = document.getElementByTagName('table');
-  currentGrid.parentNode.removeChild(currentGrid);
-
-  makeTableFromInput();
-
-  let pageTableRows = document.getElementsByTagName('tr');
-  let pageTableCells = document.getElementsByTagName('td');
-  let pageTableCellsPerRow = pageTableCells.length / pageTableRows.length;
-  let simulationSpeed = document.getElementById('simSpeed').value;
-
-  gameOfLife.storeGrid = createGridArray(pageTableCells,
-                                        pageTableCellsPerRow,
-                                        pageTableRows.length);
-  gameOfLife.initalize();
+  // load the board into the object
+  initGameBoard();
+  // seed the board
   gameOfLife.randomizeSeed();
-  gameOfLife.startSimulation();
+  // run the simulation
+  gameOfLife.runSimulation();
 }
 
-function startTheGameOfLife() {
-  makeTableFromInput();
+// executes when the page loads
+function pageLoadedStartGame() {
+  document.getElementById('tableHeight').value = '20'; // TODO: I screwed these four lines up
+  document.getElementById('tableWidth').value = '20';
+  document.getElementById('simSpeed').value = '500';
+  document.getElementById('seedDensity').value = '4';
 
-  let pageTableRows = document.getElementsByTagName('tr');
-  let pageTableCells = document.getElementsByTagName('td');
-  let pageTableCellsPerRow = pageTableCells.length / pageTableRows.length;
-  let simulationSpeed = document.getElementById('simSpeed').value;
-
-  gameOfLife.storeGrid = createGridArray(pageTableCells,
-                                        pageTableCellsPerRow,
-                                        pageTableRows.length);
-  gameOfLife.initalize();
+  initGameBoard();
   gameOfLife.randomizeSeed();
-  gameOfLife.startSimulation();
+  gameOfLife.runSimulation();
 }
