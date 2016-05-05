@@ -63,13 +63,11 @@ function makeTableFromInput() {
 
 const gameOfLife = { isPaused: true,
 
-                    initalize: function initalize(speed, height, width, density) {
+                    initalize: function initalize(speed, height, width, density, grid, cells) {
                       gameOfLife.gameSpeed = speed;
                       gameOfLife.gameHeight = height;
                       gameOfLife.gameWidth = width;
                       gameOfLife.seedDensity = density;
-                    },
-                    storeGrid: function storeGrid(grid, cells) {
                       gameOfLife.gameGrid = grid;
                       gameOfLife.gameCells = cells;
                     },
@@ -91,10 +89,14 @@ const gameOfLife = { isPaused: true,
                       }
                     },
                     evaluateLife: function evaluateLife(grid) { // TODO: Make this work
-                      /** takes a 2d array and returns the array having
-                       the game of life rules applied*/
+                      let xCoord = 0;
+                      let yCoord = 0;
+
+                      for (let i = 0; i < gameOfLife.gameCells.length; i++) {
+
+                      }
                     },
-                    // does some very janky random shit, I should probably fix that, or not
+                    // does some very janky random crap, I should probably fix that, or not
                     randomizeSeed: function randomizeSeed() { // TODO: Make this work
                       for (let i = 0; i < gameOfLife.gameCells.length; i++) {
                         const diceRoll =
@@ -120,15 +122,16 @@ function initGameBoard() {
   const simulationSpeed = document.getElementById('simSpeed').value;
   const seedDensity = document.getElementById('seedDensity').value;
 
-  gameOfLife.storeGrid(createGridArray(pageTableCells,
-                                        pageTableCellsPerRow,
-                                        pageTableRows.length),
+  gameOfLife.storeGrid(createGridArray(pageTableCells, pageTableCellsPerRow, pageTableRows.length),
                       pageTableCells);
 
   gameOfLife.initalize(simulationSpeed,
                       pageTableRows,
                       pageTableCellsPerRow,
-                      seedDensity);
+                      seedDensity,
+                      createGridArray(pageTableCells, pageTableCellsPerRow, pageTableRows.length),
+                      pageTableCells
+                      );
 }
 
 function pauseButtonClick() {
