@@ -1,7 +1,8 @@
 ALLOW CLICKING INDIVIDUAL CELLS ON/OFF
 ALLOW TO RESET GAME AND RESEED
 
-2||2 survives
+<2 dies
+2||3 survives
 >3 dies
 3 comes alive
 
