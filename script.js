@@ -86,8 +86,8 @@ const gameOfLife = { isPaused: true,
                       let xCoord = 0;
                       let yCoord = 0;
 
-                      for (let i = 0; i < gameOfLife.gameHeight.length; i++) {
-                        for (let e = 0; e < gameOfLife.gameWidth.length; e++) {
+                      for (let i = 0; i < gameOfLife.gameHeight; i++) {
+                        for (let e = 0; e < gameOfLife.gameWidth; e++) {
                           gameOfLife.queueChange(i, e);
                         }
                       }
