@@ -1,7 +1,7 @@
 'use strict';
-// Conway's Game of Life
+/* Conway's Game of Life */
 
-//  append a table of numCols by numRows to document.body.innerHTML with the id tableId
+/*  append a table of numCols by numRows to document.body.innerHTML with the id tableId */
 function createTable(numRows, numCols, tableId) {
   const begin = `<table border=1 id="${tableId}">`;
   let middle = '';
@@ -16,12 +16,15 @@ function createTable(numRows, numCols, tableId) {
 
     middle += '</tr>';
   }
-  document.body.innerHTML += `<div id = "tableDiv"> ${begin} ${middle} ${end} </div>`;
+  const newTable = document.createElement('div');
+  newTable.id = 'tableDiv';
+  newTable.innerHTML = `${begin} ${middle} ${end}`;
+  document.body.appendChild(newTable);
 }
 
-// return an array of arrays rows by columns large
+/* return an array of arrays rows by columns large */
 function create2DArray(rows, columns) {
-  let f = new Array();
+  const f = new Array();
 
   for (let i = 0; i < rows; i++) {
     f[i] = new Array();
@@ -33,7 +36,7 @@ function create2DArray(rows, columns) {
   return f;
 }
 
-/** pass a nodelist of cells, number of cells per row, number of rows:
+/* pass a nodelist of cells, number of cells per row, number of rows:
 return array of arrays of the cells */
 function createGridArray(gridCells, cellsPerRow, numberOfRows) {
   const cellArray = create2DArray(numberOfRows);
@@ -65,8 +68,8 @@ const gameOfLife = { isPaused: true,
 
                     initalize: function initalize(speed, height, width, density, grid, cells) {
                       gameOfLife.gameSpeed = speed;
-                      gameOfLife.gameHeight = height;
-                      gameOfLife.gameWidth = width;
+                      gameOfLife.gameHeight = 100;
+                      gameOfLife.gameWidth = 100;
                       gameOfLife.seedDensity = density;
                       gameOfLife.gameGrid = grid;
                       gameOfLife.gameCells = cells;
@@ -77,57 +80,96 @@ const gameOfLife = { isPaused: true,
                                                             gameOfLife.gameSpeed);
                     },
 
-                    // wraps the assignment operation for the interval
+                    /* wraps the assignment operation for the interval */
                     nextGeneration: function nextGeneration() {
-                      gameOfLife.gameGrid = gameOfLife.evaluateLife();
+                      gameOfLife.evaluateLife();
                     },
 
                     evaluateLife: function evaluateLife() { // TODO: Make this work
-                      let xCoord = 0;
-                      let yCoord = 0;
+                      const cellsToChange = { liveCells: [], deadCells: [] };
 
                       for (let i = 0; i < gameOfLife.gameHeight; i++) {
                         for (let e = 0; e < gameOfLife.gameWidth; e++) {
-                          gameOfLife.queueChange(i, e);
+                          gameOfLife.storeChanges(i, e, cellsToChange);
                         }
                       }
-                      gameOfLife.executeChanges();
+
+                      gameOfLife.executeChanges(cellsToChange);
                     },
 
-                    queueChange: function queueChange(xCoord, yCoord) { // TODO write this
+                    storeChanges: function storeChanges(xCoord, yCoord, cellsToChange) {
                       // returns the number of adjacent "on" cells
                       const numberOfAdjacent = gameOfLife.countAdjacent(xCoord, yCoord);
 
                       if (numberOfAdjacent < 2 || numberOfAdjacent > 3) {
-                        gameOfLife.queueDeath(xCoord, yCoord);
+                        cellsToChange.deadCells.push(gameOfLife.gameGrid[xCoord][yCoord]);
                       } else if (numberOfAdjacent === 3) {
-                        gameOfLife.queueLife(xCoord, yCoord);
+                        cellsToChange.liveCells.push(gameOfLife.gameGrid[xCoord][yCoord]);
                       }
                     },
 
-                    countAdjacent: function countAdjacent(xCoord, yCoord) {}, //TODO Make us
-                    queueLife: function queueLife(xCoord, yCoord) {}, // TODO Make us
-                    queueDeath: function queueDeath(xCoord, yCoord) {}, // TODO Make us
-                    executeChanges: function executeChanges() {}, // TODO Make us
+                    countAdjacent: function countAdjacent(xCoord, yCoord) {
+                      let adjacentTotal = 0;
+                      for (let i = (-1); i <= 1; i++) {
+                        for (let e = (-1); e <= 1; e++) {
+                          const currentX = xCoord + i;
+                          const currentY = yCoord + e;
+                          const tooLow = gameOfLife.checkLowerBound(currentX, currentY);
+                          const tooHigh = gameOfLife.checkUpperBound(currentX, currentY);
 
-                    // does some very janky random crap, I should probably fix that, or not
+                          if (tooHigh !== true && tooLow !== true) {
+                            if (gameOfLife.gameGrid[currentX][currentY].className === 'on') {
+                              adjacentTotal++;
+                            }
+                          }
+                        }
+                      }
+                      // trim one adjacentTotal off if the cell itself is on
+                      if (gameOfLife.gameGrid[xCoord][yCoord].className === 'on') {
+                        adjacentTotal--;
+                      }
+                      return adjacentTotal;
+                    },
+
+                    checkUpperBound: function checkUpperBound(xCoord, yCoord) {
+                      let result = false;
+                      if (xCoord >= gameOfLife.gameWidth || yCoord >= gameOfLife.gameHeight) {
+                        result = true;
+                      }
+                      return result;
+                    },
+
+                    checkLowerBound: function checkLowerBound(xCoord, yCoord) {
+                      let result = false;
+                      if (xCoord === (-1) || yCoord === (-1)) {
+                        result = true;
+                      }
+
+                      return result;
+                    },
+
+                    executeChanges: function executeChanges(cellsToChange) {
+                      cellsToChange.liveCells.forEach(function (cellToChange) {
+                        cellToChange.className = 'on';
+                      });
+                      cellsToChange.deadCells.forEach(function (cellToChange) {
+                        cellToChange.className = 'off';
+                      });
+                    },
+
+                    /* does some very janky random crap, I should probably fix that, or not */
                     randomizeSeed: function randomizeSeed() {
                       for (let i = 0; i < gameOfLife.gameCells.length; i++) {
                         const diceRoll =
                           Math.floor(Math.random() * (gameOfLife.seedDensity) - 0) + 0;
 
                         if (diceRoll > gameOfLife.seedDensity / 100) {
-                          gameOfLife.setCellAlive(i);
+                          gameOfLife.gameCells[i].className = 'on';
                         }
                       }
                     },
 
-                    // turns the cell "on"
-                    setCellAlive: function setCellAlive(cellNumber) {
-                      gameOfLife.gameCells[cellNumber].className = 'on';
-                    },
-
-                    // kills the interval if running, runSimulation if not
+                    /* kills the interval if running, runSimulation if not */
                     togglePause: function togglePause() {
                       if (gameOfLife.isPaused === true) {
                         gameOfLife.runSimulation();
@@ -144,20 +186,16 @@ function initGameBoard() {
 
   const pageTableRows = document.getElementsByTagName('tr');
   const pageTableCells = document.getElementsByTagName('td');
-  const pageTableCellsPerRow = pageTableCells.length / pageTableRows.length;
+  const pageTableCellsPerRow = (pageTableCells.length / pageTableRows.length);
   const simulationSpeed = document.getElementById('simSpeed').value;
   const seedDensity = document.getElementById('seedDensity').value;
-
-  gameOfLife.storeGrid(createGridArray(pageTableCells, pageTableCellsPerRow, pageTableRows.length),
-                      pageTableCells);
 
   gameOfLife.initalize(simulationSpeed,
                       pageTableRows,
                       pageTableCellsPerRow,
                       seedDensity,
                       createGridArray(pageTableCells, pageTableCellsPerRow, pageTableRows.length),
-                      pageTableCells
-                      );
+                      pageTableCells);
 }
 
 function pauseButtonClick() {
@@ -177,7 +215,7 @@ function resetButtonClick() {
   gameOfLife.runSimulation();
 }
 
-// executes when the page loads
+/* executes when the page loads */
 function pageLoadedStartGame() {
   document.getElementById('tableHeight').value = '20'; // TODO: I screwed these four lines up
   document.getElementById('tableWidth').value = '20';
