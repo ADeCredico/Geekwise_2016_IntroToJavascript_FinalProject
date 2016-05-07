@@ -1,5 +1,5 @@
-'use strict';
 /* Conway's Game of Life */
+// TODO Figure out why unequal widths and heights cause error
 
 /*  append a table of numCols by numRows to document.body.innerHTML with the id tableId */
 function createTable(numRows, numCols, tableId) {
@@ -64,12 +64,12 @@ function makeTableFromInput() {
   createTable(theHeight, theWidth, 'gameTable');
 }
 
-const gameOfLife = { isPaused: true,
+const gameOfLife = { isPaused: false,
 
                     initalize: function initalize(speed, height, width, density, grid, cells) {
                       gameOfLife.gameSpeed = speed;
-                      gameOfLife.gameHeight = 100;
-                      gameOfLife.gameWidth = 100;
+                      gameOfLife.gameHeight = height;
+                      gameOfLife.gameWidth = width;
                       gameOfLife.seedDensity = density;
                       gameOfLife.gameGrid = grid;
                       gameOfLife.gameCells = cells;
@@ -82,10 +82,11 @@ const gameOfLife = { isPaused: true,
 
                     /* wraps the assignment operation for the interval */
                     nextGeneration: function nextGeneration() {
+                      console.log('tick')
                       gameOfLife.evaluateLife();
                     },
 
-                    evaluateLife: function evaluateLife() { // TODO: Make this work
+                    evaluateLife: function evaluateLife() {
                       const cellsToChange = { liveCells: [], deadCells: [] };
 
                       for (let i = 0; i < gameOfLife.gameHeight; i++) {
@@ -108,6 +109,7 @@ const gameOfLife = { isPaused: true,
                       }
                     },
 
+                    //
                     countAdjacent: function countAdjacent(xCoord, yCoord) {
                       let adjacentTotal = 0;
                       for (let i = (-1); i <= 1; i++) {
@@ -117,7 +119,7 @@ const gameOfLife = { isPaused: true,
                           const tooLow = gameOfLife.checkLowerBound(currentX, currentY);
                           const tooHigh = gameOfLife.checkUpperBound(currentX, currentY);
 
-                          if (tooHigh !== true && tooLow !== true) {
+                          if (!tooHigh && !tooLow) {
                             if (gameOfLife.gameGrid[currentX][currentY].className === 'on') {
                               adjacentTotal++;
                             }
@@ -131,20 +133,20 @@ const gameOfLife = { isPaused: true,
                       return adjacentTotal;
                     },
 
-                    checkUpperBound: function checkUpperBound(xCoord, yCoord) {
-                      let result = false;
-                      if (xCoord >= gameOfLife.gameWidth || yCoord >= gameOfLife.gameHeight) {
-                        result = true;
-                      }
-                      return result;
-                    },
-
                     checkLowerBound: function checkLowerBound(xCoord, yCoord) {
                       let result = false;
                       if (xCoord === (-1) || yCoord === (-1)) {
                         result = true;
                       }
 
+                      return result;
+                    },
+
+                    checkUpperBound: function checkUpperBound(xCoord, yCoord) {
+                      let result = false;
+                      if (xCoord >= gameOfLife.gameHeight || yCoord >= gameOfLife.gameWidth) {
+                        result = true;
+                      }
                       return result;
                     },
 
@@ -160,10 +162,9 @@ const gameOfLife = { isPaused: true,
                     /* does some very janky random crap, I should probably fix that, or not */
                     randomizeSeed: function randomizeSeed() {
                       for (let i = 0; i < gameOfLife.gameCells.length; i++) {
-                        const diceRoll =
-                          Math.floor(Math.random() * (gameOfLife.seedDensity) - 0) + 0;
+                        const diceRoll = Math.floor(Math.random() * 100 - 0) + 0;
 
-                        if (diceRoll > gameOfLife.seedDensity / 100) {
+                        if (diceRoll < gameOfLife.seedDensity) {
                           gameOfLife.gameCells[i].className = 'on';
                         }
                       }
@@ -184,14 +185,14 @@ const gameOfLife = { isPaused: true,
 function initGameBoard() {
   makeTableFromInput();
 
+  const simulationSpeed = document.getElementById('simSpeed').value;
   const pageTableRows = document.getElementsByTagName('tr');
   const pageTableCells = document.getElementsByTagName('td');
   const pageTableCellsPerRow = (pageTableCells.length / pageTableRows.length);
-  const simulationSpeed = document.getElementById('simSpeed').value;
   const seedDensity = document.getElementById('seedDensity').value;
 
   gameOfLife.initalize(simulationSpeed,
-                      pageTableRows,
+                      pageTableRows.length,
                       pageTableCellsPerRow,
                       seedDensity,
                       createGridArray(pageTableCells, pageTableCellsPerRow, pageTableRows.length),
@@ -203,10 +204,10 @@ function pauseButtonClick() {
 }
 
 function resetButtonClick() {
+  clearInterval(gameOfLife.gameInterval);
   // Delete the current table from HTML
   const currentGrid = document.getElementById('tableDiv');
   document.body.removeChild(currentGrid);
-
   // load the board into the object
   initGameBoard();
   // seed the board
@@ -217,10 +218,10 @@ function resetButtonClick() {
 
 /* executes when the page loads */
 function pageLoadedStartGame() {
-  document.getElementById('tableHeight').value = '20'; // TODO: I screwed these four lines up
-  document.getElementById('tableWidth').value = '20';
+  document.getElementById('tableHeight').value = '20';
+  document.getElementById('tableWidth').value = '10';
   document.getElementById('simSpeed').value = '500';
-  document.getElementById('seedDensity').value = '4';
+  document.getElementById('seedDensity').value = '75';
 
   initGameBoard();
   gameOfLife.randomizeSeed();
