@@ -1,5 +1,6 @@
 ALLOW CLICKING INDIVIDUAL CELLS ON/OFF
 
+
 <2 dies
 2||3 survives
 >3 dies

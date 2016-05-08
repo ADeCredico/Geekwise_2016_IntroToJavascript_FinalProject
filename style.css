@@ -16,3 +16,7 @@ td {
 .on {
 	background-color: red;
 }
+
+#instruction {
+  font-size: 150%
+}

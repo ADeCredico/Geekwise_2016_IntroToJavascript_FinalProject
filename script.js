@@ -1,7 +1,18 @@
 /* Conway's Game of Life */
-// TODO Figure out why unequal widths and heights cause error
 
-/*  append a table of numCols by numRows to document.body.innerHTML with the id tableId */
+const maxWidth = 200;
+const maxHeight = 200;
+const maxDensity = 100;
+const maxSpeed = 2000;
+
+function setDefaults() {
+  document.getElementById('tableHeight').value = '30';
+  document.getElementById('tableWidth').value = '30';
+  document.getElementById('simSpeed').value = '500';
+  document.getElementById('seedDensity').value = '50';
+}
+
+//  append a table of numCols by numRows to document.body.innerHTML with the id tableId
 function createTable(numRows, numCols, tableId) {
   const begin = `<table border=1 id="${tableId}">`;
   let middle = '';
@@ -22,7 +33,7 @@ function createTable(numRows, numCols, tableId) {
   document.body.appendChild(newTable);
 }
 
-/* return an array of arrays rows by columns large */
+// return an array of arrays rows by columns large
 function create2DArray(rows, columns) {
   const f = new Array();
 
@@ -36,8 +47,8 @@ function create2DArray(rows, columns) {
   return f;
 }
 
-/* pass a nodelist of cells, number of cells per row, number of rows:
-return array of arrays of the cells */
+// pass a nodelist of cells, number of cells per row, number of rows:
+// return array of arrays of the cells
 function createGridArray(gridCells, cellsPerRow, numberOfRows) {
   const cellArray = create2DArray(numberOfRows);
   let xCoord = 0;
@@ -64,6 +75,20 @@ function makeTableFromInput() {
   createTable(theHeight, theWidth, 'gameTable');
 }
 
+
+function setClickEvents(cellList) {
+  for (let i = 0; i < cellList.length; i++) {
+    cellList[i].addEventListener('click', function cellClassToggle() {
+      if (this.className === 'off') {
+        this.className = 'on';
+      } else {
+        this.className = 'off';
+      }
+    });
+  }
+}
+
+
 const gameOfLife = { isPaused: false,
 
                     initalize: function initalize(speed, height, width, density, grid, cells) {
@@ -80,9 +105,8 @@ const gameOfLife = { isPaused: false,
                                                             gameOfLife.gameSpeed);
                     },
 
-                    /* wraps the assignment operation for the interval */
+                    // wraps the assignment operation for the interval
                     nextGeneration: function nextGeneration() {
-                      console.log('tick')
                       gameOfLife.evaluateLife();
                     },
 
@@ -109,7 +133,7 @@ const gameOfLife = { isPaused: false,
                       }
                     },
 
-                    //
+
                     countAdjacent: function countAdjacent(xCoord, yCoord) {
                       let adjacentTotal = 0;
                       for (let i = (-1); i <= 1; i++) {
@@ -151,15 +175,15 @@ const gameOfLife = { isPaused: false,
                     },
 
                     executeChanges: function executeChanges(cellsToChange) {
-                      cellsToChange.liveCells.forEach(function (cellToChange) {
+                      cellsToChange.liveCells.forEach(cellToChange => {
                         cellToChange.className = 'on';
                       });
-                      cellsToChange.deadCells.forEach(function (cellToChange) {
+                      cellsToChange.deadCells.forEach(cellToChange => {
                         cellToChange.className = 'off';
                       });
                     },
 
-                    /* does some very janky random crap, I should probably fix that, or not */
+
                     randomizeSeed: function randomizeSeed() {
                       for (let i = 0; i < gameOfLife.gameCells.length; i++) {
                         const diceRoll = Math.floor(Math.random() * 100 - 0) + 0;
@@ -170,7 +194,7 @@ const gameOfLife = { isPaused: false,
                       }
                     },
 
-                    /* kills the interval if running, runSimulation if not */
+                    // kills the interval if already running, runSimulation if not
                     togglePause: function togglePause() {
                       if (gameOfLife.isPaused === true) {
                         gameOfLife.runSimulation();
@@ -183,6 +207,7 @@ const gameOfLife = { isPaused: false,
 };
 
 function initGameBoard() {
+  // checkInputLimits(); TODO Make this check input sanity
   makeTableFromInput();
 
   const simulationSpeed = document.getElementById('simSpeed').value;
@@ -190,6 +215,8 @@ function initGameBoard() {
   const pageTableCells = document.getElementsByTagName('td');
   const pageTableCellsPerRow = (pageTableCells.length / pageTableRows.length);
   const seedDensity = document.getElementById('seedDensity').value;
+
+  setClickEvents(pageTableCells);
 
   gameOfLife.initalize(simulationSpeed,
                       pageTableRows.length,
@@ -216,14 +243,12 @@ function resetButtonClick() {
   gameOfLife.runSimulation();
 }
 
-/* executes when the page loads */
+// executes when the page loads
 function pageLoadedStartGame() {
-  document.getElementById('tableHeight').value = '20';
-  document.getElementById('tableWidth').value = '10';
-  document.getElementById('simSpeed').value = '500';
-  document.getElementById('seedDensity').value = '75';
-
+  setDefaults();
   initGameBoard();
   gameOfLife.randomizeSeed();
   gameOfLife.runSimulation();
 }
+
+// TODO check input sanity by adding a buffer between input and the ingested values
