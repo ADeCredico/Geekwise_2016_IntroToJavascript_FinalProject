@@ -1,10 +1,6 @@
 /* Conway's Game of Life */
 
-const maxWidth = 200;
-const maxHeight = 200;
-const maxDensity = 100;
-const maxSpeed = 2000;
-
+// writes some default values to the <input>
 function setDefaults() {
   document.getElementById('tableHeight').value = '30';
   document.getElementById('tableWidth').value = '30';
@@ -68,14 +64,19 @@ function createGridArray(gridCells, cellsPerRow, numberOfRows) {
   return cellArray;
 }
 
+// creates the <table> using the <input>
 function makeTableFromInput() {
   const theHeight = document.getElementById('tableHeight').value;
   const theWidth = document.getElementById('tableWidth').value;
 
-  createTable(theHeight, theWidth, 'gameTable');
+  if (theHeight > 0 && theWidth > 0) {
+    createTable(theHeight, theWidth, 'gameTable');
+  } else {
+    alert('bad table creation parameters')
+  }
 }
 
-
+// makes the <table> clicky
 function setClickEvents(cellList) {
   for (let i = 0; i < cellList.length; i++) {
     cellList[i].addEventListener('click', function cellClassToggle() {
@@ -91,6 +92,7 @@ function setClickEvents(cellList) {
 
 const gameOfLife = { isPaused: false,
 
+                    // stores the state of the game board and the <input> options
                     initalize: function initalize(speed, height, width, density, grid, cells) {
                       gameOfLife.gameSpeed = speed;
                       gameOfLife.gameHeight = height;
@@ -100,6 +102,7 @@ const gameOfLife = { isPaused: false,
                       gameOfLife.gameCells = cells;
                     },
 
+                    // creates the interval loop
                     runSimulation: function runSimulation() {
                       gameOfLife.gameInterval = setInterval(gameOfLife.nextGeneration,
                                                             gameOfLife.gameSpeed);
@@ -110,6 +113,7 @@ const gameOfLife = { isPaused: false,
                       gameOfLife.evaluateLife();
                     },
 
+                    // checks the cells, stores the chages, executes the changes to the <table>
                     evaluateLife: function evaluateLife() {
                       const cellsToChange = { liveCells: [], deadCells: [] };
 
@@ -133,7 +137,7 @@ const gameOfLife = { isPaused: false,
                       }
                     },
 
-
+                    // checks from x-1/y-1 to x+1/y+1, returns total adjacent 'on'
                     countAdjacent: function countAdjacent(xCoord, yCoord) {
                       let adjacentTotal = 0;
                       for (let i = (-1); i <= 1; i++) {
@@ -150,13 +154,14 @@ const gameOfLife = { isPaused: false,
                           }
                         }
                       }
-                      // trim one adjacentTotal off if the cell itself is on
+                      // trim one off of adjacentTotal if the targeted cell itself is on
                       if (gameOfLife.gameGrid[xCoord][yCoord].className === 'on') {
                         adjacentTotal--;
                       }
                       return adjacentTotal;
                     },
 
+                    // returns true if x or y are < 0
                     checkLowerBound: function checkLowerBound(xCoord, yCoord) {
                       let result = false;
                       if (xCoord === (-1) || yCoord === (-1)) {
@@ -166,6 +171,7 @@ const gameOfLife = { isPaused: false,
                       return result;
                     },
 
+                    // returns true if x or y are > the height or length of the board
                     checkUpperBound: function checkUpperBound(xCoord, yCoord) {
                       let result = false;
                       if (xCoord >= gameOfLife.gameHeight || yCoord >= gameOfLife.gameWidth) {
@@ -174,6 +180,7 @@ const gameOfLife = { isPaused: false,
                       return result;
                     },
 
+                    // changes the executes the passed cells on/off
                     executeChanges: function executeChanges(cellsToChange) {
                       cellsToChange.liveCells.forEach(cellToChange => {
                         cellToChange.className = 'on';
@@ -183,7 +190,7 @@ const gameOfLife = { isPaused: false,
                       });
                     },
 
-
+                    // randomizes the cells and writes the changes to the <table>
                     randomizeSeed: function randomizeSeed() {
                       for (let i = 0; i < gameOfLife.gameCells.length; i++) {
                         const diceRoll = Math.floor(Math.random() * 100 - 0) + 0;
@@ -218,6 +225,9 @@ function initGameBoard() {
 
   setClickEvents(pageTableCells);
 
+  if (seedDensity < 0) alert('positive densities only');
+  if (simulationSpeed < 0) alert('positive speeds only');
+
   gameOfLife.initalize(simulationSpeed,
                       pageTableRows.length,
                       pageTableCellsPerRow,
@@ -243,6 +253,14 @@ function resetButtonClick() {
   gameOfLife.runSimulation();
 }
 
+// Toggle pause on space key
+const spaceKey = 32;
+document.addEventListener('keydown', function() {
+  if (event.keyCode === spaceKey) {
+    gameOfLife.togglePause();
+  }
+});
+
 // executes when the page loads
 function pageLoadedStartGame() {
   setDefaults();
@@ -250,5 +268,3 @@ function pageLoadedStartGame() {
   gameOfLife.randomizeSeed();
   gameOfLife.runSimulation();
 }
-
-// TODO check input sanity by adding a buffer between input and the ingested values
