@@ -249,14 +249,12 @@ function resetButtonClick() {
   // Delete the current table from HTML
   const currentGrid = document.getElementById('tableDiv');
   document.body.removeChild(currentGrid);
-  // load the board into the object
   initGameBoard();
-  // seed the board
   gameOfLife.randomizeSeed();
-  // run the simulation
   gameOfLife.runSimulation();
 }
 
+// run when speed input box loses focus
 function changeSimulationSpeed() {
   const newSpeed = document.getElementById('simSpeed').valueAsNumber;
   gameOfLife.stopSimulation();
@@ -279,5 +277,3 @@ function pageLoadedStartGame() {
   gameOfLife.randomizeSeed();
   gameOfLife.runSimulation();
 }
-
-// TODO Fix bug that spawns an extra interval when density is set to 0
