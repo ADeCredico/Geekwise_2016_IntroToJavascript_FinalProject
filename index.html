@@ -6,7 +6,7 @@
 		<div id="instruction">The table is clicky.</div><br />
 		Height<input type="number" min="0" max="300" id="tableHeight" /><br />
 		Width<input type="number" min="0" max="300" id="tableWidth" /><br />
-		Generation Frequency (ms)<input type="number" min="0" id="simSpeed" /><br />
+		Generation Frequency (ms)<input type="number" min="0" id="simSpeed" onFocusOut="changeSimulationSpeed()" /><br />
 		Seed Density 0-100 <input type="number" min="0" id="seedDensity" /><br />
 		<button onclick="pauseButtonClick()" type="button" id="pauseButton" />Play/Pause</button>
 		<button onclick="resetButtonClick()" type="button" id="resetButton" />Reset</button>

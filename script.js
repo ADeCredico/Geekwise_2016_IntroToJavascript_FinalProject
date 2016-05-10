@@ -69,11 +69,8 @@ function makeTableFromInput() {
   const theHeight = document.getElementById('tableHeight').value;
   const theWidth = document.getElementById('tableWidth').value;
 
-  if (theHeight > 0 && theWidth > 0) {
-    createTable(theHeight, theWidth, 'gameTable');
-  } else {
-    alert('bad table creation parameters')
-  }
+  createTable(theHeight, theWidth, 'gameTable');
+
 }
 
 // makes the <table> clicky
@@ -209,26 +206,31 @@ const gameOfLife = { isPaused: false,
                         gameOfLife.isPaused = false;
                         gameOfLife.runSimulation();
                       } else {
-                        clearInterval(gameOfLife.gameInterval);
                         gameOfLife.isPaused = true;
+                        gameOfLife.stopSimulation();
                       }
                     },
+
+                    stopSimulation: function stopSimulation() {
+                      clearInterval(gameOfLife.gameInterval);
+                    },
+
+                    changeSpeed: function changeSpeed(newSpeed) {
+                      gameOfLife.gameSpeed = newSpeed;
+                    }
 };
 
 function initGameBoard() {
   // checkInputLimits(); TODO Make this check input sanity
   makeTableFromInput();
 
-  const simulationSpeed = document.getElementById('simSpeed').value;
+  const simulationSpeed = document.getElementById('simSpeed').valueAsNumber;
   const pageTableRows = document.getElementsByTagName('tr');
   const pageTableCells = document.getElementsByTagName('td');
   const pageTableCellsPerRow = (pageTableCells.length / pageTableRows.length);
-  const seedDensity = document.getElementById('seedDensity').value;
+  const seedDensity = document.getElementById('seedDensity').valueAsNumber;
 
   setClickEvents(pageTableCells);
-
-  if (seedDensity < 0) alert('positive densities only');
-  if (simulationSpeed < 0) alert('positive speeds only');
 
   gameOfLife.initalize(simulationSpeed,
                       pageTableRows.length,
@@ -243,7 +245,7 @@ function pauseButtonClick() {
 }
 
 function resetButtonClick() {
-  clearInterval(gameOfLife.gameInterval);
+  gameOfLife.stopSimulation();
   // Delete the current table from HTML
   const currentGrid = document.getElementById('tableDiv');
   document.body.removeChild(currentGrid);
@@ -252,6 +254,13 @@ function resetButtonClick() {
   // seed the board
   gameOfLife.randomizeSeed();
   // run the simulation
+  gameOfLife.runSimulation();
+}
+
+function changeSimulationSpeed() {
+  const newSpeed = document.getElementById('simSpeed').valueAsNumber;
+  gameOfLife.stopSimulation();
+  gameOfLife.changeSpeed(newSpeed);
   gameOfLife.runSimulation();
 }
 
