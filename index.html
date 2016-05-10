@@ -3,14 +3,14 @@
 		<title>Game of Life</title>
 	</head>
 	<body onload = "pageLoadedStartGame()">
-		<div id="instruction">The table is clicky.</div><br>
-		Height<input type="text" id="tableHeight"><br>
-		Width<input type="text" id="tableWidth"><br>
-		Generation Frequency (ms)<input type="text" id="simSpeed"><br>
-		Seed Density 0-100 <input type="text" id="seedDensity"><br>
-		<button onclick="pauseButtonClick()" type="button" id="pauseButton">Play/Pause</button>
-		<button onclick="resetButtonClick()" type="button" id="resetButton">Reset</button>
-		<script src="script.js"></script>
-		<link rel="stylesheet" href="style.css">
+		<div id="instruction">The table is clicky.</div><br />
+		Height<input type="number" min="0" max="300" id="tableHeight" /><br />
+		Width<input type="number" min="0" max="300" id="tableWidth" /><br />
+		Generation Frequency (ms)<input type="number" min="0" id="simSpeed" /><br />
+		Seed Density 0-100 <input type="number" min="0" id="seedDensity" /><br />
+		<button onclick="pauseButtonClick()" type="button" id="pauseButton" />Play/Pause</button>
+		<button onclick="resetButtonClick()" type="button" id="resetButton" />Reset</button>
+		<script src="script.js" /></script>
+		<link rel="stylesheet" href="style.css" />
 	</body>
 </html>

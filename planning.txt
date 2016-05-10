@@ -1,5 +1,6 @@
-
-
+-make the height and width dynamically add/subtract cells from the grid using up/down arrow control on the web page
+-allow for random insertion of patterns like polyminos and methuselahs and spaceships
+-allow for manual insertion of patterns like polyminos and methuselahs and spaceships
 
 <2 dies
 2||3 survives

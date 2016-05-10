@@ -104,8 +104,10 @@ const gameOfLife = { isPaused: false,
 
                     // creates the interval loop
                     runSimulation: function runSimulation() {
-                      gameOfLife.gameInterval = setInterval(gameOfLife.nextGeneration,
+                      if (gameOfLife.isPaused === false) {
+                        gameOfLife.gameInterval = setInterval(gameOfLife.nextGeneration,
                                                             gameOfLife.gameSpeed);
+                      }
                     },
 
                     // wraps the assignment operation for the interval
@@ -204,8 +206,8 @@ const gameOfLife = { isPaused: false,
                     // kills the interval if already running, runSimulation if not
                     togglePause: function togglePause() {
                       if (gameOfLife.isPaused === true) {
-                        gameOfLife.runSimulation();
                         gameOfLife.isPaused = false;
+                        gameOfLife.runSimulation();
                       } else {
                         clearInterval(gameOfLife.gameInterval);
                         gameOfLife.isPaused = true;
@@ -268,3 +270,5 @@ function pageLoadedStartGame() {
   gameOfLife.randomizeSeed();
   gameOfLife.runSimulation();
 }
+
+// TODO Fix bug that spawns an extra interval when density is set to 0
