@@ -3,10 +3,10 @@
 		<title>Game of Life</title>
 	</head>
 	<body onload = "pageLoadedStartGame()">
-		<div id="instruction">The table is clicky.</div><br />
-		Height<input type="number" min="0" max="300" id="tableHeight" /><br />
-		Width<input type="number" min="0" max="300" id="tableWidth" /><br />
-		Generation Frequency (ms)<input type="number" min="0" id="simSpeed" onFocusOut="changeSimulationSpeed()" /><br />
+		<div id="instruction">The table is clicky.<br />Speed & size dynamically change<br /></div>
+		Height<input type="number" min="0" max="300" id="tableHeight" onChange="resizeGameTable()" ><br />
+		Width<input type="number" min="0" max="300" id="tableWidth" onChange="resizeGameTable()"><br />
+		Generation Frequency (ms)<input type="number" min="0" id="simSpeed" onChange="changeSimulationSpeed()" ><br /></input>
 		Seed Density 0-100 <input type="number" min="0" id="seedDensity" /><br />
 		<button onclick="pauseButtonClick()" type="button" id="pauseButton" />Play/Pause</button>
 		<button onclick="resetButtonClick()" type="button" id="resetButton" />Reset</button>

@@ -1,5 +1,11 @@
 /* Conway's Game of Life */
 
+const spaceKey = 32;
+// intercepts the spacebar so it doesn't scroll the screen on pause
+window.onkeydown = function(e) {
+  return !(e.keyCode === 32);
+};
+
 // writes some default values to the <input>
 function setDefaults() {
   document.getElementById('tableHeight').value = '30';
@@ -27,6 +33,11 @@ function createTable(numRows, numCols, tableId) {
   newTable.id = 'tableDiv';
   newTable.innerHTML = `${begin} ${middle} ${end}`;
   document.body.appendChild(newTable);
+}
+
+function deleteTable() {
+  const currentGrid = document.getElementById('tableDiv');
+  document.body.removeChild(currentGrid);
 }
 
 // return an array of arrays rows by columns large
@@ -86,8 +97,8 @@ function setClickEvents(cellList) {
   }
 }
 
-
 const gameOfLife = { isPaused: false,
+                     storedGrid: create2DArray(0, 0),
 
                     // stores the state of the game board and the <input> options
                     initalize: function initalize(speed, height, width, density, grid, cells) {
@@ -196,6 +207,38 @@ const gameOfLife = { isPaused: false,
 
                         if (diceRoll < gameOfLife.seedDensity) {
                           gameOfLife.gameCells[i].className = 'on';
+                        } else {
+                          gameOfLife.gameCells[i].className = 'off';
+                        }
+                      }
+                    },
+
+                    storeGridState: function storeGridState() {
+                      gameOfLife.storedGrid = create2DArray(gameOfLife.gameHeight,
+                                                              gameOfLife.gameWidth);
+
+                      for (let i = 0; i < gameOfLife.gameHeight; i++) {
+                        for (let e = 0; e < gameOfLife.gameWidth; e++) {
+                          if (gameOfLife.gameGrid[i][e].className === 'on') {
+                            gameOfLife.storedGrid[i][e] = true;
+                          }
+                        }
+                      }
+                    },
+
+                    restoreStoredGrid: function restoreStoredGrid() {
+                      // assumes that the grid's at least 1 cell wide
+                      const storedGridHeight = gameOfLife.storedGrid.length;
+                      const storedGridWidth = gameOfLife.storedGrid[0].length;
+
+                      const heightLimit = Math.min(storedGridHeight, gameOfLife.gameHeight);
+                      const widthLimit = Math.min(storedGridWidth, gameOfLife.gameWidth);
+
+                      for (let i = 0; i < heightLimit; i++) {
+                        for (let e = 0; e < widthLimit; e++) {
+                          if (gameOfLife.storedGrid[i][e] === true) {
+                            gameOfLife.gameGrid[i][e].className = 'on';
+                          }
                         }
                       }
                     },
@@ -217,7 +260,7 @@ const gameOfLife = { isPaused: false,
 
                     changeSpeed: function changeSpeed(newSpeed) {
                       gameOfLife.gameSpeed = newSpeed;
-                    }
+                    },
 };
 
 function initGameBoard() {
@@ -240,17 +283,26 @@ function initGameBoard() {
                       pageTableCells);
 }
 
+function resetGame() {
+  gameOfLife.stopSimulation();
+  deleteTable();
+  initGameBoard();
+}
+
 function pauseButtonClick() {
   gameOfLife.togglePause();
 }
 
 function resetButtonClick() {
-  gameOfLife.stopSimulation();
-  // Delete the current table from HTML
-  const currentGrid = document.getElementById('tableDiv');
-  document.body.removeChild(currentGrid);
-  initGameBoard();
+  resetGame();
   gameOfLife.randomizeSeed();
+  gameOfLife.runSimulation();
+}
+
+function resizeGameTable() {
+  gameOfLife.storeGridState();
+  resetGame();
+  gameOfLife.restoreStoredGrid();
   gameOfLife.runSimulation();
 }
 
@@ -263,7 +315,6 @@ function changeSimulationSpeed() {
 }
 
 // Toggle pause on space key
-const spaceKey = 32;
 document.addEventListener('keydown', function() {
   if (event.keyCode === spaceKey) {
     gameOfLife.togglePause();
