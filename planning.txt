@@ -1,4 +1,3 @@
--make the height and width dynamically add/subtract cells from the grid using up/down arrow control on the web page
 -allow for random insertion of patterns like polyminos and methuselahs and spaceships
 -allow for manual insertion of patterns like polyminos and methuselahs and spaceships
 
@@ -6,46 +5,3 @@
 2||3 survives
 >3 dies
 3 comes alive
-
-//////Program Logic///////
--game object constituents
-  -game object properties
-    -gameSpeed
-    -gridSize
-    -seedDensity
-    -pause boolean - initalize to on
-    -2d grid array
-  -game object methods
-    -initalization - is passed gameSpeed, gridSize, seedDensity, pauseState input boxes
-      and stores in properties
-    -runSimulation loop
-    -nextGeneration runs one generation pass over the grid and kills/creates lives
-    -storeTable is passed table and stores in 2d grid array
-    -toggle pause boolean, call runSimulation if unpausing
-
--on game object's runSimulation method being called
-  -setInterval with  gameSpeed
-    -check for pause state
-      -if paused clear the interval and exit
-    -call the NextGeneration function
-    -write CSS class of "on" to the cells that are set to on
-
--web page controls
-  -pause/play button - calls game object's togglePause method
-  -reset game button
-  -gameSpeed, gridHeight, gridWidth, seedDensity text inputs
-
--on page load
-  -write grid to DOM with ID gameTable
-  -call initalization method of the game object
-  -pass grid to game object's 2d array
-  -call game object method to randomize the cells using the stored seedDensity
-  -call the game object's start simulation method
-
--on "reset game" button push
-  -delete the entire gameTable HTML tag
-  -write grid to DOM with ID gameTable
-  -call initalization method of the game object
-  -pass grid to game object's 2d array
-  -call game object method to randomizeCells using the stored seedDensity
-  -call the game object's start simulation method
