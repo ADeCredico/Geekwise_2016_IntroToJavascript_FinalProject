@@ -98,6 +98,7 @@ function setClickEvents(cellList) {
 }
 
 const gameOfLife = { isPaused: false,
+                     currentGrid: create2DArray(0, 0),
                      storedGrid: create2DArray(0, 0),
 
                     // stores the state of the game board and the <input> options
@@ -108,6 +109,21 @@ const gameOfLife = { isPaused: false,
                       gameOfLife.seedDensity = density;
                       gameOfLife.gameGrid = grid;
                       gameOfLife.gameCells = cells;
+                    },
+
+                    populateCurrentGrid: function populateCurrentGrid() {
+                      const newGrid = create2DArray(gameOfLife.gameHeight,
+                                                            gameOfLife.gameWidth);
+                      for (let i = 0; i < gameOfLife.gameHeight; i++) {
+                        for (let e = 0; e < gameOfLife.gameWidth; e++) {
+                          if (gameOfLife.gameGrid[i][e] === 'on') {
+                            newGrid[i][e] = true;
+                          } else {
+                            newGrid[i][e] = false;
+                          }
+                        }
+                      }
+                      gameOfLife.storedGrid = newGrid;
                     },
 
                     // creates the interval loop
@@ -211,6 +227,7 @@ const gameOfLife = { isPaused: false,
                           gameOfLife.gameCells[i].className = 'off';
                         }
                       }
+                      gameOfLife.populateCurrentGrid();
                     },
 
                     storeGridState: function storeGridState() {
